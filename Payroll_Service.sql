@@ -192,10 +192,10 @@ select * from EmployeeDetails; -- Display Table
 
 --insert values into EmployeeDetails Table
 INSERT into EmployeeDetails(Emp_Name,Gender,Phone_Number,Payroll_id) values
-('Nitish Kumar','M','7488162561','1'),
-('Indal Yadav','M','9856237845','2'),
-('Rupesh Singh','M','7856239865','3'),
-('Ayusi','F','8945123698','4');
+('Shubham Seth','M','8188616249','1'),
+('Ajay Seth','M','9856237845','2'),
+('Om Prakash','M','7856239865','3'),
+('Terissa','F','8945123698','4');
 
 --UC11.3:- Create Table Department   relation M-M
 create table Department(Dept_id int not null identity(1,1) primary key,DeptName varchar(50) not null unique);
@@ -235,5 +235,34 @@ select * from Addresses;
 --Insert Values Addresses Table
 insert into Addresses Values
 (1,'Chandawak-Ghazipur Road','Jaunpur','UttarPradesh'),
-(2,'SRU Colony','Ramghar','Jharkhand');
+(2,'Kale Colony','Pune','Maharashtra');
 select * from Addresses;
+
+
+--UC12:- Ensure all retrieve queries done especially in UC 4, UC 5 and UC 7 are working with new table structure.
+--Rechecking UC4 get income Tax Employee
+select Emp_id,Emp_Name,IncomeTax from EmployeeDetails,PayrollDetails where EmployeeDetails.Payroll_id=PayrollDetails.Payroll_id;
+
+--Retrive income Tax UC5 get income Tax Employee
+select Emp_id,Emp_Name,IncomeTax from EmployeeDetails,PayrollDetails where Emp_Name='Rupesh Singh' and  
+EmployeeDetails.Payroll_id=PayrollDetails.Payroll_id;
+
+--Retrive income Tax UC5 get income Tax Employee
+select Emp_id,Emp_Name,IncomeTax from EmployeeDetails,PayrollDetails where Start_Date between CAST('1900-01-01' as date) and GETDATE() and  
+EmployeeDetails.Payroll_id=PayrollDetails.Payroll_id;
+
+--Joining the EmployeeDetails table and PayrollDetails table using inner join
+Select * from PayrollDetails a
+inner join EmployeeDetails b on
+a.Payroll_id = b.Payroll_id;
+
+--Check MIN MAX Income Tax UC7
+select * from PayrollDetails
+Alter Table PayrollDetails add Gender varchar(1);
+UPDATE PayrollDetails set Gender = 'F' where Payroll_id = 4;   --updating Gender
+UPDATE PayrollDetails set Gender = 'M' where Payroll_id = 1 or Payroll_id = 2 or Payroll_id = 3 
+
+Select Gender, MIN(IncomeTax) From PayrollDetails GROUP BY Gender;
+Select Gender, MAX(IncomeTax) From PayrollDetails GROUP BY Gender;
+Select Gender, AVG(IncomeTax) From PayrollDetails GROUP BY Gender;
+Select Gender, Sum(IncomeTax) From PayrollDetails GROUP BY Gender;
